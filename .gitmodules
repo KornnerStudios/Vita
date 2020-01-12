@@ -1,6 +1,6 @@
 [submodule "KSoft"]
 	path = KSoft
-	url = https://@github.com/KornnerStudios/KSoft.git
+	url = https://github.com/KornnerStudios/KSoft.git
 [submodule "Games/Blam"]
 	path = Games/Blam
 	url = https://github.com/KornnerStudios/KSoft.Blam.git

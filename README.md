@@ -66,7 +66,7 @@ If there are other .NET languages which don't (easily) offer bit flag operations
 [EnumHasFlagSO]: http://stackoverflow.com/questions/7368652/what-is-it-that-makes-enum-hasflag-so-slow
 
 ## Building
-Before you try building any of the projects, first [read the requirements](https://bitbucket.org/KornnerStudios/ksoft/wiki/Requirements) you may need.
+Before you try building any of the projects, first [read the requirements][VitaRequirements] you may need.
 
 [KSoft.T4][KSoftT4] should always be the first thing that gets built. It's the meta assembly used by many of the T4 documents that are found in all the other assemblies. It's only needed when building projects, not at runtime.
 
@@ -74,5 +74,6 @@ Before you try building any of the projects, first [read the requirements](https
 
 However, at the time of this writing these C++/cli projects haven't been populated with meaningful code, so you're currently safe just building for 'Any CPU'
 
+[VitaRequirements]: https://github.com/KornnerStudios/Vita/wiki/Requirements
 [KSoftT4]: https://github.com/KornnerStudios/KSoft/tree/master/KSoft.T4
 

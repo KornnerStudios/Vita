@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/xhbxf0u5udky4t11/branch/master?svg=true)](https://ci.appveyor.com/project/kornman00/vita/branch/master)
+
 # What is Vita?
 
 Vita _was_ the codename for what are now just the KSoft libraries.

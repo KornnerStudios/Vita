@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
+	<!-- <Import Project="$(MSBuildThisFileDirectory)\KSoft\KSoft.BCL.props" /> -->
 	<PropertyGroup>
-		<VitaNugetPackagesDir>$(MSBuildThisFileDirectory)\packages</VitaNugetPackagesDir>
+		<VitaNugetPackagesDir>$(MSBuildThisFileDirectory)packages</VitaNugetPackagesDir>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)KSoft/shared/config/msbuild/VitaCommon.props" />
+
+	<ItemGroup>
+		<T4ParameterValues Include="VitaSolutionFamilyBinPath">
+			<Value>$(VitaSolutionFamilyBinPath)</Value>
+		</T4ParameterValues>
+	</ItemGroup>
+
+	<!-- http://www.olegsych.com/2010/04/understanding-t4-msbuild-integration/#ConfiguringProject -->
+	<PropertyGroup>
+		<TransformOnBuild>true</TransformOnBuild>
 	</PropertyGroup>
 </Project>

@@ -58,6 +58,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{9E5018EC-A27E-4A1C-AC23-FEF0CBCF7EEA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "msbuild", "msbuild", "{908F2E43-78FC-4F32-BC9E-221A6D56CC63}"
+	ProjectSection(SolutionItems) = preProject
+		KSoft\shared\config\msbuild\VitaBuild.targets = KSoft\shared\config\msbuild\VitaBuild.targets
+		KSoft\shared\config\msbuild\VitaCommon.Cpp.props = KSoft\shared\config\msbuild\VitaCommon.Cpp.props
+		KSoft\shared\config\msbuild\VitaCommon.Cs.props = KSoft\shared\config\msbuild\VitaCommon.Cs.props
+		KSoft\shared\config\msbuild\VitaCommon.props = KSoft\shared\config\msbuild\VitaCommon.props
+		KSoft\shared\config\msbuild\VitaCommonConfig.props = KSoft\shared\config\msbuild\VitaCommonConfig.props
+		KSoft\shared\config\msbuild\VitaUserConfigDefaults.props = KSoft\shared\config\msbuild\VitaUserConfigDefaults.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +175,9 @@ Global
 		{FF4C18C7-4F54-4FD9-8347-10AC805FD129} = {2218BEA4-9F80-49EF-8AFD-7CA6B480CF8B}
 		{39F76124-673A-4DCE-AEAA-BD571AB38AAB} = {2218BEA4-9F80-49EF-8AFD-7CA6B480CF8B}
 		{C643B043-00A2-4D8D-8F78-7E57E194B2E6} = {2218BEA4-9F80-49EF-8AFD-7CA6B480CF8B}
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {29A6065E-B7E7-43B1-BC6D-102F17ED9643}
+		{9E5018EC-A27E-4A1C-AC23-FEF0CBCF7EEA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{908F2E43-78FC-4F32-BC9E-221A6D56CC63} = {9E5018EC-A27E-4A1C-AC23-FEF0CBCF7EEA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67C0E08D-C895-4661-B8CB-BDA95B1CF420}

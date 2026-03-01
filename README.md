@@ -1,4 +1,5 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/xhbxf0u5udky4t11/branch/master?svg=true)](https://ci.appveyor.com/project/kornman00/vita/branch/master)
+[![Build status - main](https://ci.appveyor.com/api/projects/status/xhbxf0u5udky4t11/branch/master?svg=true)](https://ci.appveyor.com/project/kornman00/vita/branch/master)
+[![Build status - dotnet8](https://ci.appveyor.com/api/projects/status/xhbxf0u5udky4t11/branch/dotnet8?svg=true)](https://ci.appveyor.com/project/kornman00/vita/branch/dotnet8)
 
 # What is Vita?
 

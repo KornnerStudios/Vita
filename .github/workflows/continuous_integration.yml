@@ -55,3 +55,6 @@ jobs:
     - name: Build Vita AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild -maxcpucount -restore -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Test
+      run: dotnet test --no-restore --no-build --configuration ${{ matrix.build-configuration }} --verbosity normal --filter "TestCategory!=ExcludedFromAppveyor"

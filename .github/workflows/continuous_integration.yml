@@ -21,6 +21,9 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '8.0.x' ]
 
     steps:
     - name: Checkout
@@ -28,15 +31,23 @@ jobs:
       with:
         submodules: true
 
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+
+    - name: Install dependencies
+      run: dotnet restore
+
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
       with:
         vs-version: '[17.0,18.0)'
         msbuild-architecture: x64
 
-    #- name: Restore NuGet packages
-    #  working-directory: ${{env.GITHUB_WORKSPACE}}
-    #  run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
     #- name: Build
     #  working-directory: ${{env.GITHUB_WORKSPACE}}

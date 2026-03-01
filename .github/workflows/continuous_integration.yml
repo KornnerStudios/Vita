@@ -76,12 +76,14 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: >-
         msbuild -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }}
+        -restore
         KSoft/KSoft.T4/KSoft.T4.csproj
 
     - name: Build Vita AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: >-
         msbuild -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }}
+        -restore
         -maxcpucount
         ${{env.SOLUTION_FILE_PATH}}
 

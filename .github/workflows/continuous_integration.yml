@@ -23,7 +23,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        dotnet-version: [ '8.0.x' ]
+        dotnet-version: [ '.0.x' ]
         build-configuration: [ 'Debug', 'Release' ]
 
     steps:
@@ -57,4 +57,4 @@ jobs:
       run: msbuild -maxcpucount -restore -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} ${{env.SOLUTION_FILE_PATH}}
 
     - name: Test
-      run: dotnet test --no-restore --no-build --configuration ${{ matrix.build-configuration }} --verbosity normal --filter "TestCategory!=ExcludedFromAppveyor"
+      run: dotnet test --no-restore --configuration ${{ matrix.build-configuration }} --verbosity normal --filter "TestCategory!=ExcludedFromAppveyor"

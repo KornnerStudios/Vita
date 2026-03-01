@@ -24,6 +24,7 @@ jobs:
     strategy:
       matrix:
         dotnet-version: [ '8.0.x' ]
+        build-configuration: [ 'Debug', 'Release' ]
 
     steps:
     - name: Checkout
@@ -45,26 +46,12 @@ jobs:
         vs-version: '[17.0,18.0)'
         msbuild-architecture: x64
 
-    #- name: Restore NuGet packages
-    #  working-directory: ${{env.GITHUB_WORKSPACE}}
-    #  run: nuget restore ${{env.SOLUTION_FILE_PATH}}
-
-    #- name: Build
-    #  working-directory: ${{env.GITHUB_WORKSPACE}}
-    #  # Add additional options to the MSBuild command line here (like platform or verbosity level).
-    #  # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-    #  run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
-
     # Build KSoft.T4 first. It is net481, while everything else is dotnet.
     # The point is to get KSoft.T4.dll built and available for the dotnet projects to use for T4 transformations.
-    - name: Build KSoft.T4 Debug|AnyCPU
+    - name: Build KSoft.T4 AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild -restore -property:Platform=AnyCPU -property:Configuration=Debug KSoft/KSoft.T4/KSoft.T4.csproj
+      run: msbuild -restore -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} KSoft/KSoft.T4/KSoft.T4.csproj
 
-    - name: Build Vita Debug|AnyCPU
+    - name: Build Vita AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild -restore -property:Platform=AnyCPU -property:Configuration=Debug ${{env.SOLUTION_FILE_PATH}}
-
-    #- name: Build Vita Release|AnyCPU
-    #  working-directory: ${{env.GITHUB_WORKSPACE}}
-    #  run: msbuild -restore -property:Platform=AnyCPU -property:Configuration=Release ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild -maxcpucount -restore -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} ${{env.SOLUTION_FILE_PATH}}

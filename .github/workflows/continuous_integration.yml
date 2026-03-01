@@ -75,18 +75,18 @@ jobs:
     - name: Build KSoft.T4 AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: >-
-        msbuild -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} \
-          KSoft/KSoft.T4/KSoft.T4.csproj
+        msbuild -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }}
+        KSoft/KSoft.T4/KSoft.T4.csproj
 
     - name: Build Vita AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: >-
-        msbuild -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} \
-          -maxcpucount \
-          ${{env.SOLUTION_FILE_PATH}}
+        msbuild -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }}
+        -maxcpucount
+        ${{env.SOLUTION_FILE_PATH}}
 
     - name: Test
       run: >-
-        dotnet test --configuration ${{ matrix.build-configuration }} \
-          --verbosity normal \
-          --filter "TestCategory!=ExcludedFromAppveyor"
+        dotnet test --configuration ${{ matrix.build-configuration }}
+        --verbosity normal
+        --filter "TestCategory!=ExcludedFromAppveyor"

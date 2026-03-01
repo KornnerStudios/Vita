@@ -6,6 +6,8 @@
 
 		<!--https://devblogs.microsoft.com/dotnet/enable-repeatable-package-restores-using-a-lock-file/-->
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+		<!--Expected that ContinuousIntegrationBuild is set as an env variable in the github action-->
+		<RestoreLockedMode Condition=" '$(ContinuousIntegrationBuild)'=='true' ">true</RestoreLockedMode>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)KSoft/shared/config/msbuild/VitaCommon.props" />

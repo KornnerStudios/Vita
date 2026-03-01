@@ -2,9 +2,23 @@ name: CI
 
 on:
   push:
-    branches: [ "master", "dotnet8", "main" ]
+    branches:
+      - "master"
+      - "dotnet8"
+      - "main"
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.gitignore"
+      - "**/*.gitattributes"
   pull_request:
-    branches: [ "master", "dotnet8", "main" ]
+    branches:
+      - "master"
+      - "dotnet8"
+      - "main"
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.gitignore"
+      - "**/*.gitattributes"
 
 env:
   # Path to the solution file relative to the root of the project.
@@ -14,6 +28,9 @@ env:
   # You can convert this to a build matrix if you need coverage of multiple configuration types.
   # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
   BUILD_CONFIGURATION: Release
+
+  # To be used in msbuild props files
+  ContinuousIntegrationBuild: true
 
 permissions:
   contents: read
@@ -36,8 +53,15 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
+        # https://www.damirscorner.com/blog/posts/20240726-CachingNuGetPackagesInGitHubActions.html
+        cache: true
+        # setup-dotnet expects a single packages.lock.json file in the root by default,
+        # but we have multiple projects in subdirectories
+        cache-dependency-path: "**/packages.lock.json"
 
     - name: Install dependencies
+      # should not need to explicitly specify --locked-mode as ContinuousIntegrationBuild
+      # should trigger RestoreLockedMode in the props files
       run: dotnet restore
 
     - name: Add msbuild to PATH
@@ -50,11 +74,11 @@ jobs:
     # The point is to get KSoft.T4.dll built and available for the dotnet projects to use for T4 transformations.
     - name: Build KSoft.T4 AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild -restore -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} KSoft/KSoft.T4/KSoft.T4.csproj
+      run: msbuild --no-restore -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} KSoft/KSoft.T4/KSoft.T4.csproj
 
     - name: Build Vita AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild -maxcpucount -restore -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild -maxcpucount--no-restore -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} ${{env.SOLUTION_FILE_PATH}}
 
     - name: Test
       run: dotnet test --configuration ${{ matrix.build-configuration }} --verbosity normal --filter "TestCategory!=ExcludedFromAppveyor"

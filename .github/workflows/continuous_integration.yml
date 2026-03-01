@@ -74,11 +74,19 @@ jobs:
     # The point is to get KSoft.T4.dll built and available for the dotnet projects to use for T4 transformations.
     - name: Build KSoft.T4 AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild --no-restore -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} KSoft/KSoft.T4/KSoft.T4.csproj
+      run: >-
+        msbuild -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} \
+          KSoft/KSoft.T4/KSoft.T4.csproj
 
     - name: Build Vita AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild -maxcpucount--no-restore -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} ${{env.SOLUTION_FILE_PATH}}
+      run: >-
+        msbuild -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }} \
+          -maxcpucount \
+          ${{env.SOLUTION_FILE_PATH}}
 
     - name: Test
-      run: dotnet test --configuration ${{ matrix.build-configuration }} --verbosity normal --filter "TestCategory!=ExcludedFromAppveyor"
+      run: >-
+        dotnet test --configuration ${{ matrix.build-configuration }} \
+          --verbosity normal \
+          --filter "TestCategory!=ExcludedFromAppveyor"

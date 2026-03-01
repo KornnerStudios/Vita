@@ -3,6 +3,9 @@
 	<!-- <Import Project="$(MSBuildThisFileDirectory)\KSoft\KSoft.BCL.props" /> -->
 	<PropertyGroup>
 		<VitaNugetPackagesDir>$(MSBuildThisFileDirectory)packages</VitaNugetPackagesDir>
+
+		<!--https://devblogs.microsoft.com/dotnet/enable-repeatable-package-restores-using-a-lock-file/-->
+		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)KSoft/shared/config/msbuild/VitaCommon.props" />

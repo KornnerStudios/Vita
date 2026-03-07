@@ -72,6 +72,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "msbuild", "msbuild", "{908F
 		KSoft\shared\config\msbuild\VitaUserConfigDefaults.props = KSoft\shared\config\msbuild\VitaUserConfigDefaults.props
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{C1ADA060-8FDA-4818-AAE3-643CB2D4B7FD}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\continuous_integration.yml = .github\workflows\continuous_integration.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AnyCPU = Debug|AnyCPU
@@ -178,6 +183,7 @@ Global
 		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {29A6065E-B7E7-43B1-BC6D-102F17ED9643}
 		{9E5018EC-A27E-4A1C-AC23-FEF0CBCF7EEA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{908F2E43-78FC-4F32-BC9E-221A6D56CC63} = {9E5018EC-A27E-4A1C-AC23-FEF0CBCF7EEA}
+		{C1ADA060-8FDA-4818-AAE3-643CB2D4B7FD} = {6AA558A3-A237-4DCA-86BD-B6497439D60C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67C0E08D-C895-4661-B8CB-BDA95B1CF420}

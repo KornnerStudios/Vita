@@ -20,7 +20,7 @@ root = true
 		curly_bracket_next_line = true
 		indent_brace_style = Allman
 
-[*.{xml,yml}]
+[*.{xml,yml,runsettings}]
 		indent_style = space
 		indent_size = 2
 

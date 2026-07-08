@@ -36,8 +36,9 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    runs-on: windows-latest
+  build_ksoft_t4:
+    name: Build KSoft.T4 (${{ matrix.build-configuration }})
+    runs-on: windows-2022
     strategy:
       matrix:
         dotnet-version: [ '9.0.x' ]
@@ -53,15 +54,10 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
-        # https://www.damirscorner.com/blog/posts/20240726-CachingNuGetPackagesInGitHubActions.html
         cache: true
-        # setup-dotnet expects a single packages.lock.json file in the root by default,
-        # but we have multiple projects in subdirectories
         cache-dependency-path: "**/packages.lock.json"
 
     - name: Install dependencies
-      # should not need to explicitly specify --locked-mode as ContinuousIntegrationBuild
-      # should trigger RestoreLockedMode in the props files
       run: dotnet restore
 
     - name: Add msbuild to PATH
@@ -79,13 +75,40 @@ jobs:
         -restore
         KSoft/KSoft.T4/KSoft.T4.csproj
 
+  build_and_test:
+    name: Build and Test Vita (${{ matrix.build-configuration }})
+    needs: build_ksoft_t4
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '9.0.x' ]
+        build-configuration: [ 'Debug', 'Release' ]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+        cache: true
+        cache-dependency-path: "**/packages.lock.json"
+
+    - name: Install dependencies
+      # should not need to explicitly specify --locked-mode as ContinuousIntegrationBuild
+      # should trigger RestoreLockedMode in the props files
+      run: dotnet restore
+
     - name: Build Vita AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: >-
-        msbuild -property:Platform=AnyCPU -property:Configuration=${{ matrix.build-configuration }}
-        -restore
-        -maxcpucount
-        ${{env.SOLUTION_FILE_PATH}}
+        dotnet build ${{env.SOLUTION_FILE_PATH}}
+        --configuration ${{ matrix.build-configuration }}
+        --no-restore
+        -m
 
     - name: Test
       run: >-

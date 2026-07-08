@@ -69,7 +69,10 @@ jobs:
         cache-dependency-path: "**/packages.lock.json"
 
     - name: Install dependencies
-      run: dotnet restore
+      run: >-
+        dotnet restore ${{ env.SOLUTION_FILE_PATH }}
+        -p:Configuration=${{ matrix.build-configuration }}
+        -p:Platform=${{ env.BUILD_PLATFORM }}
 
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
@@ -133,7 +136,10 @@ jobs:
     - name: Install dependencies
       # should not need to explicitly specify --locked-mode as ContinuousIntegrationBuild
       # should trigger RestoreLockedMode in the props files
-      run: dotnet restore
+      run: >-
+        dotnet restore ${{ env.SOLUTION_FILE_PATH }}
+        -p:Configuration=${{ matrix.build-configuration }}
+        -p:Platform=${{ env.BUILD_PLATFORM }}
 
     - name: Download KSoft.T4 outputs
       uses: actions/download-artifact@v4
@@ -146,12 +152,14 @@ jobs:
       run: >-
         dotnet build ${{ env.SOLUTION_FILE_PATH }}
         --configuration ${{ matrix.build-configuration }}
+        -p:Platform=${{ env.BUILD_PLATFORM }}
         --no-restore
         -m
 
     - name: Test
       run: >-
         dotnet test --configuration ${{ matrix.build-configuration }}
+        -p:Platform=${{ env.BUILD_PLATFORM }}
         --no-build
         --no-restore
         --verbosity normal

@@ -32,6 +32,9 @@ env:
   # To be used in msbuild props files
   ContinuousIntegrationBuild: true
 
+  # Visual Studio 2022 toolset output directory used by repository build props.
+  VS_TOOLSET_DIR: v180
+
 permissions:
   contents: read
 
@@ -75,6 +78,21 @@ jobs:
         -restore
         KSoft/KSoft.T4/KSoft.T4.csproj
 
+    - name: Verify KSoft.T4 outputs exist
+      shell: pwsh
+      run: |
+        $path = "_bin/${{ env.VS_TOOLSET_DIR }}/${{ matrix.build-configuration }}/KSoft.BCL/KSoft.T4.dll"
+        if (!(Test-Path $path)) {
+          throw "Expected output missing: $path"
+        }
+
+    - name: Upload KSoft.T4 outputs
+      uses: actions/upload-artifact@v4
+      with:
+        name: ksoft-t4-${{ matrix.build-configuration }}
+        path: _bin/${{ env.VS_TOOLSET_DIR }}/${{ matrix.build-configuration }}/KSoft.BCL/**
+        if-no-files-found: error
+
   build_and_test:
     name: Build and Test Vita (${{ matrix.build-configuration }})
     needs: build_ksoft_t4
@@ -102,6 +120,12 @@ jobs:
       # should trigger RestoreLockedMode in the props files
       run: dotnet restore
 
+    - name: Download KSoft.T4 outputs
+      uses: actions/download-artifact@v4
+      with:
+        name: ksoft-t4-${{ matrix.build-configuration }}
+        path: _bin/${{ env.VS_TOOLSET_DIR }}/${{ matrix.build-configuration }}/KSoft.BCL
+
     - name: Build Vita AnyCPU
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: >-
@@ -113,5 +137,7 @@ jobs:
     - name: Test
       run: >-
         dotnet test --configuration ${{ matrix.build-configuration }}
+        --no-build
+        --no-restore
         --verbosity normal
         --filter "TestCategory!=ExcludedFromAppveyor"

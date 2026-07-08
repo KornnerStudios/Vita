@@ -32,8 +32,8 @@ env:
   # To be used in msbuild props files
   ContinuousIntegrationBuild: true
 
-  # Visual Studio 2022 toolset output directory used by repository build props.
-  VS_TOOLSET_DIR: v180
+  # Visual Studio toolset output directory used by repository build props.
+  VS_TOOLSET_DIR: v170
 
 permissions:
   contents: read

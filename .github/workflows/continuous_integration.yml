@@ -160,6 +160,7 @@ jobs:
       run: >-
         dotnet test --configuration ${{ matrix.build-configuration }}
         -p:Platform=${{ env.BUILD_PLATFORM }}
+        -p:RunSettingsFilePath=
         --no-build
         --no-restore
         --verbosity normal

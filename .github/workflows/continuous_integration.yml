@@ -156,10 +156,14 @@ jobs:
         --no-restore
         -m
 
+    # Need to explicitly set RunSettingsFilePath to an empty string as it is set by Test.KSoft.Phoenix.csproj
+    # When dotnet test is ran, the presence of that RunSettingsFilePath property in the csproj prevents the --filter
+    # from reaching MTP.
     - name: Test
       run: >-
         dotnet test --configuration ${{ matrix.build-configuration }}
         -p:Platform=${{ env.BUILD_PLATFORM }}
+        -p:RunSettingsFilePath=
         --no-build
         --no-restore
         --verbosity normal

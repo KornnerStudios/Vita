@@ -156,15 +156,37 @@ jobs:
         --no-restore
         -m
 
-    # Need to explicitly set RunSettingsFilePath to an empty string as it is set by Test.KSoft.Phoenix.csproj
-    # When dotnet test is ran, the presence of that RunSettingsFilePath property in the csproj prevents the --filter
-    # from reaching MTP.
+    # For MTP-specific arguments, the docs say to append them after an additional --
+    # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-mtp#forward-arguments-to-the-test-application
+    # Since this is using `>-` the newlines are folded into spaces. The `--` is on the same line as the `--filter` argument.
     - name: Test
       run: >-
-        dotnet test --configuration ${{ matrix.build-configuration }}
+        dotnet test ${{ env.SOLUTION_FILE_PATH }}
+        --configuration ${{ matrix.build-configuration }}
         -p:Platform=${{ env.BUILD_PLATFORM }}
-        -p:RunSettingsFilePath=
         --no-build
         --no-restore
         --verbosity normal
+        --
         --filter "TestCategory!=ExcludedFromAppveyor"
+
+    - name: Print test logs on failure
+      if: failure()
+      shell: pwsh
+      run: |
+        $logs = Get-ChildItem -Path "${{ github.workspace }}" -Recurse -File |
+          Where-Object {
+            $_.FullName -match '[\\/](TestResults)[\\/]' -and
+            $_.Extension -in '.log', '.trx', '.xml'
+          }
+
+        if (!$logs) {
+          Write-Host "No test result logs found."
+          exit 0
+        }
+
+        foreach ($log in $logs) {
+          Write-Host "::group::$($log.FullName)"
+          Get-Content -LiteralPath $log.FullName -Raw
+          Write-Host "::endgroup::"
+        }

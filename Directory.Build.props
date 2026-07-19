@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
+	<!-- <Import Project="$(MSBuildThisFileDirectory)\KSoft\KSoft.BCL.props" /> -->
 	<PropertyGroup>
-		<VitaNugetPackagesDir>$(MSBuildThisFileDirectory)\packages</VitaNugetPackagesDir>
+		<VitaNugetPackagesDir>$(MSBuildThisFileDirectory)packages</VitaNugetPackagesDir>
+
+		<!--https://devblogs.microsoft.com/dotnet/enable-repeatable-package-restores-using-a-lock-file/-->
+		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+		<!--Expected that ContinuousIntegrationBuild is set as an env variable in the github action-->
+		<RestoreLockedMode Condition=" '$(ContinuousIntegrationBuild)'=='true' ">true</RestoreLockedMode>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)KSoft/shared/config/msbuild/VitaCommon.props" />
+
+	<ItemGroup>
+		<T4ParameterValues Include="VitaSolutionFamilyBinPath">
+			<Value>$(VitaSolutionFamilyBinPath)</Value>
+		</T4ParameterValues>
+	</ItemGroup>
+
+	<!-- http://www.olegsych.com/2010/04/understanding-t4-msbuild-integration/#ConfiguringProject -->
+	<PropertyGroup>
+		<TransformOnBuild>true</TransformOnBuild>
 	</PropertyGroup>
 </Project>

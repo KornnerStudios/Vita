@@ -1,0 +1,166 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "master"
+      - "dotnet8"
+      - "main"
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.gitignore"
+      - "**/*.gitattributes"
+  pull_request:
+    branches:
+      - "master"
+      - "dotnet8"
+      - "main"
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.gitignore"
+      - "**/*.gitattributes"
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: Vita.sln
+
+  # Configuration type to build.
+  # You can convert this to a build matrix if you need coverage of multiple configuration types.
+  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  BUILD_CONFIGURATION: Release
+
+  # To be used in msbuild props files
+  ContinuousIntegrationBuild: true
+
+  BUILD_PLATFORM: AnyCPU
+
+permissions:
+  contents: read
+
+jobs:
+  build_ksoft_t4:
+    name: Build KSoft.T4 (${{ matrix.toolset.name }}, ${{ matrix.build-configuration }})
+    runs-on: ${{ matrix.toolset.runner }}
+    strategy:
+      matrix:
+        dotnet-version: [ '9.0.x' ]
+        build-configuration: [ 'Debug', 'Release' ]
+        toolset:
+          - name: vs2022
+            runner: windows-2022
+            vs-version: '[17.0,18.0)'
+            output-dir: v170
+          - name: vs2026
+            runner: windows-2025
+            vs-version: '[18.0,19.0)'
+            output-dir: v180
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+        cache: true
+        cache-dependency-path: "**/packages.lock.json"
+
+    - name: Install dependencies
+      run: >-
+        dotnet restore ${{ env.SOLUTION_FILE_PATH }}
+        -p:Configuration=${{ matrix.build-configuration }}
+        -p:Platform=${{ env.BUILD_PLATFORM }}
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: ${{ matrix.toolset.vs-version }}
+        msbuild-architecture: x64
+
+    # Build KSoft.T4 first. It is net481, while everything else is dotnet.
+    # The point is to get KSoft.T4.dll built and available for the dotnet projects to use for T4 transformations.
+    - name: Build KSoft.T4 AnyCPU
+      working-directory: ${{ github.workspace }}
+      run: >-
+        msbuild -property:Platform=${{ env.BUILD_PLATFORM }} -property:Configuration=${{ matrix.build-configuration }}
+        -restore
+        KSoft/KSoft.T4/KSoft.T4.csproj
+
+    - name: Verify KSoft.T4 outputs exist
+      shell: pwsh
+      run: |
+        $path = Join-Path "${{ github.workspace }}" "_bin/${{ matrix.toolset.output-dir }}/${{ matrix.build-configuration }}/${{ env.BUILD_PLATFORM }}/KSoft.BCL/KSoft.T4.dll"
+        if (!(Test-Path $path)) {
+          throw "Expected output missing: $path"
+        }
+
+    - name: Upload KSoft.T4 outputs
+      uses: actions/upload-artifact@v4
+      with:
+        name: ksoft-t4-${{ matrix.toolset.name }}-${{ matrix.build-configuration }}
+        path: ${{ github.workspace }}/_bin/${{ matrix.toolset.output-dir }}/${{ matrix.build-configuration }}/${{ env.BUILD_PLATFORM }}/KSoft.BCL/**
+        if-no-files-found: error
+
+  build_and_test:
+    name: Build and Test Vita (${{ matrix.toolset.name }}, ${{ matrix.build-configuration }})
+    needs: build_ksoft_t4
+    runs-on: ${{ matrix.toolset.runner }}
+    strategy:
+      matrix:
+        dotnet-version: [ '9.0.x' ]
+        build-configuration: [ 'Debug', 'Release' ]
+        toolset:
+          - name: vs2022
+            runner: windows-2022
+            output-dir: v170
+          - name: vs2026
+            runner: windows-2025
+            output-dir: v180
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+        cache: true
+        cache-dependency-path: "**/packages.lock.json"
+
+    - name: Install dependencies
+      # should not need to explicitly specify --locked-mode as ContinuousIntegrationBuild
+      # should trigger RestoreLockedMode in the props files
+      run: >-
+        dotnet restore ${{ env.SOLUTION_FILE_PATH }}
+        -p:Configuration=${{ matrix.build-configuration }}
+        -p:Platform=${{ env.BUILD_PLATFORM }}
+
+    - name: Download KSoft.T4 outputs
+      uses: actions/download-artifact@v4
+      with:
+        name: ksoft-t4-${{ matrix.toolset.name }}-${{ matrix.build-configuration }}
+        path: ${{ github.workspace }}/_bin/${{ matrix.toolset.output-dir }}/${{ matrix.build-configuration }}/${{ env.BUILD_PLATFORM }}/KSoft.BCL
+
+    - name: Build Vita AnyCPU
+      working-directory: ${{ github.workspace }}
+      run: >-
+        dotnet build ${{ env.SOLUTION_FILE_PATH }}
+        --configuration ${{ matrix.build-configuration }}
+        -p:Platform=${{ env.BUILD_PLATFORM }}
+        --no-restore
+        -m
+
+    - name: Test
+      run: >-
+        dotnet test --configuration ${{ matrix.build-configuration }}
+        -p:Platform=${{ env.BUILD_PLATFORM }}
+        --no-build
+        --no-restore
+        --verbosity normal
+        --filter "TestCategory!=ExcludedFromAppveyor"

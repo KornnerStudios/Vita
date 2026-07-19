@@ -6,9 +6,11 @@ root = true
 [*]
 	# newline ending every file
 		insert_final_newline = true
+		end_of_line = crlf
 	# I prefer tabs, with my view set to 4 spaces. YMMV.
 		indent_style = tab
-		#tab_width = 4
+		tab_width = 4
+		indent_size = 4
 	# I do not like green eggs nor ham, nor trailing whitespace
 		trim_trailing_whitespace = true
 
@@ -17,3 +19,39 @@ root = true
 	# I do not like K&R bracing
 		curly_bracket_next_line = true
 		indent_brace_style = Allman
+
+[*.{xml,yml,runsettings}]
+		indent_style = space
+		indent_size = 2
+
+[*]
+	#### C# specific rules ####
+		csharp_indent_case_contents = true
+		csharp_indent_case_labels = true
+		csharp_prefer_braces = true:suggestion
+		csharp_space_after_keywords_in_control_flow_statements = true
+		csharp_space_after_semicolon_in_for_statement = true
+	#### .NET Coding Conventions ####
+		dotnet_remove_unnecessary_suppression_exclusions = none
+		dotnet_style_namespace_match_folder = false:suggestion
+		dotnet_style_prefer_compound_assignment = false:suggestion
+	#### Diagnostic configuration ####
+		dotnet_diagnostic.CA1822.severity = silent
+		# "Collection initialization can be simplified"
+		dotnet_diagnostic.IDE0028.severity = silent
+		# "Indexing can be simplified"
+		dotnet_diagnostic.IDE0056.severity = silent
+		# "Substring can be simplified"
+		dotnet_diagnostic.IDE0057.severity = silent
+		# "Using statement can be simplified"
+		dotnet_diagnostic.IDE0063.severity = silent
+		# "Conditional expression can be simplified"
+		dotnet_diagnostic.IDE0075.severity = silent
+		# "Remove unnecessary suppression"
+		# setting this to silent instead of suggestion, as with .net9 port it is misfiring on things
+		dotnet_diagnostic.IDE0079.severity = silent
+		dotnet_diagnostic.IDE0130.severity = none
+		dotnet_diagnostic.IDE0290.severity = none #  Use primary constructor
+		# "Collection initialization can be simplified"
+		dotnet_diagnostic.IDE0305.severity = silent
+		dotnet_diagnostic.IDE0306.severity = silent

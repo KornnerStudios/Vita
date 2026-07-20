@@ -2,4 +2,5 @@
 .vs/
 _bin/
 _obj/
+BenchmarkDotNet.Artifacts/
 TestResults/

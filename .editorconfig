@@ -84,20 +84,3 @@ root = true
 		# invalid, rather than a generic None sentinel.
 		dotnet_diagnostic.CA1008.severity = none
 
-[KSoft/KSoft/Memory/Strings/StringMemoryPool.cs]
-	dotnet_diagnostic.CA1033.severity = none
-
-[KSoft/KSoft.IO.TagElementStreams/TagElementStream.Read.cs]
-	dotnet_diagnostic.CA1033.severity = none
-
-[Games/Blam/KSoft.Blam/Collections/ActiveList.cs]
-dotnet_diagnostic.CA1033.severity = none
-
-[Games/Blam/KSoft.Blam/Localization/StringTables/LocaleStringTable.cs]
-dotnet_diagnostic.CA1033.severity = none
-
-[Games/Phoenix/KSoft.Phoenix/Collections/{BListBase,Types/BTypeNames,AutoId/BListAutoIdObject}.cs]
-dotnet_diagnostic.CA1033.severity = none
-
-[Games/Phoenix/KSoft.Phoenix/Phx/Database/BDatabaseBase.cs]
-dotnet_diagnostic.CA1033.severity = none

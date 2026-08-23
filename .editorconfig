@@ -56,6 +56,16 @@ root = true
 		dotnet_diagnostic.IDE0305.severity = silent
 		dotnet_diagnostic.IDE0306.severity = silent
 
+		# CA1707 "Identifiers should not contain underscores": Wwise/vendor, wire-format, and legacy test identifiers
+		# intentionally preserve external spelling; renaming them would obscure source-data correspondence.
+		dotnet_diagnostic.CA1707.severity = none
+		# CA1303 "Do not pass literals as localized parameters": Vita has no localization product contract for its
+		# internal tools, diagnostics, tests, or format messages.
+		dotnet_diagnostic.CA1303.severity = none
+		# CA1002 "Do not expose generic lists": mutable List<T> members are intentional internal format-model shapes.
+		dotnet_diagnostic.CA1002.severity = none
+		# CA1051 "Do not declare visible instance fields": visible fields intentionally model serialized and interop data.
+		dotnet_diagnostic.CA1051.severity = none
 		# CA1515 "Consider making public types internal": test discovery, WPF/XAML, and composition frameworks
 		# require public types even when they are not conventional cross-assembly APIs.
 		dotnet_diagnostic.CA1515.severity = none
@@ -83,4 +93,3 @@ root = true
 		# CA1008 "Enums should have zero value": zero is often a wire/native domain value or intentionally
 		# invalid, rather than a generic None sentinel.
 		dotnet_diagnostic.CA1008.severity = none
-

@@ -55,3 +55,49 @@ root = true
 		# "Collection initialization can be simplified"
 		dotnet_diagnostic.IDE0305.severity = silent
 		dotnet_diagnostic.IDE0306.severity = silent
+
+		# CA1515 "Consider making public types internal": test discovery, WPF/XAML, and composition frameworks
+		# require public types even when they are not conventional cross-assembly APIs.
+		dotnet_diagnostic.CA1515.severity = none
+		# CA1711 "Identifiers should not have incorrect suffix": stream, delegate, flag, and implementation suffixes
+		# describe established serialization and framework conventions that cannot be safely renamed wholesale.
+		dotnet_diagnostic.CA1711.severity = none
+		# CA1712 "Do not prefix enum values with type name": native API and serialized-format enums preserve
+		# vendor spelling for compatibility and direct correspondence with external documentation.
+		dotnet_diagnostic.CA1712.severity = none
+		# CA1720 "Identifiers should not contain type names": numeric and object type names intentionally
+		# communicate binary-layout, serialized-value, and interop semantics.
+		dotnet_diagnostic.CA1720.severity = none
+		# CA1308 "Normalize strings to uppercase": lowercase command tokens, XML names, extensions, and
+		# generated identifiers are intentional compatibility and format conventions.
+		dotnet_diagnostic.CA1308.severity = none
+		# CA1805 "Do not initialize unnecessarily": explicit defaults document None/Empty sentinels,
+		# serialized option state, and UI/model initialization contracts.
+		dotnet_diagnostic.CA1805.severity = none
+		# CA1819 "Properties should not return arrays": array properties intentionally expose serialized
+		# buffers, mutable metadata, and UI binding data.
+		dotnet_diagnostic.CA1819.severity = none
+		# CA1028 "Enum storage should be Int32": non-Int32 underlying types preserve native ABI,
+		# binary resource layout, compact serialization, and version/signature widths.
+		dotnet_diagnostic.CA1028.severity = none
+		# CA1008 "Enums should have zero value": zero is often a wire/native domain value or intentionally
+		# invalid, rather than a generic None sentinel.
+		dotnet_diagnostic.CA1008.severity = none
+
+[KSoft/KSoft/Memory/Strings/StringMemoryPool.cs]
+	dotnet_diagnostic.CA1033.severity = none
+
+[KSoft/KSoft.IO.TagElementStreams/TagElementStream.Read.cs]
+	dotnet_diagnostic.CA1033.severity = none
+
+[Games/Blam/KSoft.Blam/Collections/ActiveList.cs]
+dotnet_diagnostic.CA1033.severity = none
+
+[Games/Blam/KSoft.Blam/Localization/StringTables/LocaleStringTable.cs]
+dotnet_diagnostic.CA1033.severity = none
+
+[Games/Phoenix/KSoft.Phoenix/Collections/{BListBase,Types/BTypeNames,AutoId/BListAutoIdObject}.cs]
+dotnet_diagnostic.CA1033.severity = none
+
+[Games/Phoenix/KSoft.Phoenix/Phx/Database/BDatabaseBase.cs]
+dotnet_diagnostic.CA1033.severity = none

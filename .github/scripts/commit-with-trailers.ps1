@@ -9,7 +9,7 @@ param(
 	[AllowEmptyString()]
 	[string[]] $Body = @(),
 
-	[string] $RepoPath = "KSoft",
+	[string] $RepoPath,
 
 	[switch] $Amend,
 
@@ -23,6 +23,10 @@ $ErrorActionPreference = "Stop"
 
 $CoAuthorTrailer = "Co-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>"
 $SessionTrailer = "Copilot-Session: 0edcd990-76f3-499b-8e47-a421a88fe7b2"
+
+if ([string]::IsNullOrWhiteSpace($RepoPath)) {
+	$RepoPath = Join-Path (Split-Path -Parent $PSCommandPath) "..\.."
+}
 
 function Normalize-CommitBody {
 	param(
@@ -85,6 +89,12 @@ if ($commitMessage -match "(?m)^Co-authored-by:.*\n\s*\nCopilot-Session:") {
 	throw "Commit message trailers must be contiguous with no blank line between them."
 }
 
+$repositoryPath = (Resolve-Path -LiteralPath $RepoPath -ErrorAction Stop).Path
+$insideWorkTree = (& git -C $repositoryPath rev-parse --is-inside-work-tree).Trim()
+if ($LASTEXITCODE -ne 0 -or $insideWorkTree -ne "true") {
+	throw "RepoPath is not a Git worktree: $repositoryPath"
+}
+
 if ($Preview) {
 	$commitMessage
 	return
@@ -95,7 +105,7 @@ try {
 	$utf8NoBom = [System.Text.UTF8Encoding]::new($false)
 	[System.IO.File]::WriteAllText($messageFile.FullName, $commitMessage + "`n", $utf8NoBom)
 
-	$gitArgs = @("-C", $RepoPath, "commit")
+	$gitArgs = @("-C", $repositoryPath, "commit")
 	if ($Amend) {
 		$gitArgs += "--amend"
 	}

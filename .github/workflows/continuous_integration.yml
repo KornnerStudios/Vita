@@ -43,7 +43,7 @@ jobs:
     runs-on: ${{ matrix.toolset.runner }}
     strategy:
       matrix:
-        dotnet-version: [ '9.0.x' ]
+        dotnet-version: [ '10.0.x' ]
         build-configuration: [ 'Debug', 'Release' ]
         toolset:
           - name: vs2022

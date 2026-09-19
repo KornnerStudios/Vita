@@ -16,6 +16,8 @@ Preserve persisted binary/XML/string/hash/compression contracts, native ABI, and
 
 Keep unrelated API, SDK/TFM, package/feed/lock, native, generator, and analyzer changes separate. For an intentional build/dependency change, reconcile affected manifests, locked restore, CI, output conventions, and source/package consumers. Record compatibility breaks, release-note needs, and rollback in the change review, not a second backlog.
 
+Configuration and Platform must be initialized before Vita's shared build properties derive paths. Pass both explicitly for direct CLI build/restore/test/run invocations; do not rely on later SDK defaults.
+
 ## Evidence
 
 Validate the changed contract and affected consumers; use the CI workflow for integration requirements. Prefer small synthetic fixtures with independently justified expected bytes, XML, digests, errors, and notification sequences, including malformed input, endian/boundary cases, framing, and short reads as relevant. Fixtures need an owning test, stable scenario, provenance, and rationale for changes; unexplained golden drift or output copied solely from the implementation is not evidence. Do not commit game captures, proprietary binaries, or machine-specific paths.

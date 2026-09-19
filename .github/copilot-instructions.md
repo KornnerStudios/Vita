@@ -6,6 +6,8 @@ Source, tests, manifests, and Git history are authoritative. Read them before re
 
 Keep documentation concise, with one physical line per prose paragraph or list item; use editor word wrap. Put implementation-specific rationale in nearby comments or XML docs, durable decision rules here, and substantial repeatable procedures in project skills only when needed.
 
+Prefer file-scoped namespaces (`namespace Name;`) in new C# files. Do not convert unrelated existing files just to match this preference.
+
 ## Change boundaries
 
 Vita integrates component repositories through submodules. Keep each component change and its Vita pointer update separately reviewable, with affected-consumer validation and a clear rollback boundary. Package consumption, consolidation, or a monorepo requires an explicit decision, not incidental cleanup.
@@ -32,7 +34,9 @@ Enable opt-in analyzers only with an explicit subsystem owner, rule intent, beha
 
 ## Git workflow
 
-Commit only when explicitly requested. All commits made by Copilot in this workspace must use `.github\scripts\commit-with-trailers.ps1`; do not invoke `git commit` directly. The script owns the required commit trailer block. Pass a one-line summary as the first argument and an optional explanatory body as the remaining argument text.
+Commit only when explicitly requested. All agent-authored commits in this workspace must use `.github\scripts\commit-with-trailers.ps1`; do not invoke `git commit` directly. Pass a one-line summary as the first argument and an optional explanatory body as the remaining argument text. Use `-RepoPath` for a component repository and `-Preview` to inspect the message without committing. The script owns the trailer block; do not include its trailers in the summary or body.
+
+Supply the required `-SessionId`, `-CoAuthorName`, `-CoAuthorEmail`, and `-SessionTrailerName` explicitly. Use the current session's GUID and the active client's attribution conventions (for example, `Copilot-Session` for Copilot), not an identity inferred from the selected model. Do not reuse a previous session's GUID or invent missing attribution values; ask if they are unavailable. Co-author identity is separate from Git's author/committer identity, which the script does not override.
 
 Pushing requires explicit user permission in the current conversation. Do not run `git push` or otherwise update remote refs based on implied intent, prior context, or a general request to finish work.
 

@@ -9,6 +9,23 @@ param(
 	[AllowEmptyString()]
 	[string[]] $Body = @(),
 
+	[Parameter(Mandatory = $true)]
+	[ValidateScript({ $_ -ne [guid]::Empty })]
+	[guid] $SessionId,
+
+	[Parameter(Mandatory = $true)]
+	[ValidateNotNullOrEmpty()]
+	[ValidatePattern('\A[^<>\p{Cc}\p{Zl}\p{Zp}]+\z')]
+	[string] $CoAuthorName,
+
+	[Parameter(Mandatory = $true)]
+	[ValidatePattern('\A[^\s<>@\p{Cc}]+@[^\s<>@\p{Cc}]+\z')]
+	[string] $CoAuthorEmail,
+
+	[Parameter(Mandatory = $true)]
+	[ValidatePattern('\A[A-Za-z0-9][A-Za-z0-9-]*\z')]
+	[string] $SessionTrailerName,
+
 	[string] $RepoPath,
 
 	[switch] $Amend,
@@ -21,8 +38,17 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$CoAuthorTrailer = "Co-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>"
-$SessionTrailer = "Copilot-Session: 0edcd990-76f3-499b-8e47-a421a88fe7b2"
+$CoAuthorName = $CoAuthorName.Trim()
+if ($CoAuthorName.Length -eq 0) {
+	throw "CoAuthorName must not be empty."
+}
+if ($SessionTrailerName -ieq "Co-authored-by") {
+	throw "SessionTrailerName must not be Co-authored-by."
+}
+
+$CoAuthorTrailer = "Co-authored-by: $CoAuthorName <$CoAuthorEmail>"
+$SessionTrailer = "${SessionTrailerName}: $($SessionId.ToString('D'))"
+$sessionTrailerNamePattern = [regex]::Escape($SessionTrailerName)
 
 if ([string]::IsNullOrWhiteSpace($RepoPath)) {
 	$RepoPath = Join-Path (Split-Path -Parent $PSCommandPath) "..\.."
@@ -47,7 +73,7 @@ function Assert-NoCommitTrailers {
 		[string] $FieldName
 	)
 
-	if ($Text -match "(?mi)^(Co-authored-by|Copilot-Session):") {
+	if ($Text -match "(?mi)^[ \t]*(Co-authored-by|$sessionTrailerNamePattern)[ \t]*:") {
 		throw "$FieldName must not include commit trailers. This script appends the required trailer block."
 	}
 }
@@ -85,7 +111,7 @@ if (-not $commitMessage.EndsWith($expectedTrailerBlock, [System.StringComparison
 	throw "Commit message trailer block was not appended correctly."
 }
 
-if ($commitMessage -match "(?m)^Co-authored-by:.*\n\s*\nCopilot-Session:") {
+if ($commitMessage -match "(?m)^Co-authored-by:.*\n\s*\n${sessionTrailerNamePattern}:") {
 	throw "Commit message trailers must be contiguous with no blank line between them."
 }
 

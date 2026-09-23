@@ -3,8 +3,6 @@ name: CI
 on:
   push:
     branches:
-      - "master"
-      - "dotnet8"
       - "main"
     paths-ignore:
       - "**/*.md"
@@ -12,8 +10,6 @@ on:
       - "**/*.gitattributes"
   pull_request:
     branches:
-      - "master"
-      - "dotnet8"
       - "main"
     paths-ignore:
       - "**/*.md"

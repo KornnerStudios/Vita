@@ -1,7 +1,5 @@
 [![CI](https://github.com/KornnerStudios/Vita/actions/workflows/continuous_integration.yml/badge.svg)](https://github.com/KornnerStudios/Vita/actions/workflows/continuous_integration.yml)
 
-[![Build status - main](https://ci.appveyor.com/api/projects/status/xhbxf0u5udky4t11/branch/main?svg=true)](https://ci.appveyor.com/project/kornman00/vita/branch/main)
-
 # What is Vita?
 
 Vita _was_ the codename for what are now just the KSoft libraries.

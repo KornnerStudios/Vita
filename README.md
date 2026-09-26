@@ -55,6 +55,36 @@ You will actually be hard pressed to find a decent, comprehensive BitStream clas
 Vita uses the .NET APIs for enum flag testing and comparison, while KSoft retains helpers for readable flag mutation. See the enum section in `KSoft\README.md` for details.
 
 ## Building
+
 Before you try building any of the projects, first [read the requirements][VitaRequirements] you may need.
 
 [VitaRequirements]: https://github.com/KornnerStudios/Vita/wiki/Requirements
+
+## Dependency and lock policy
+
+`Directory.Packages.props` is the requested-version catalog for the complete Vita superproject. Its labeled package groups identify which entries a smaller Vita-like superproject must copy for its selected modules; component projects keep versionless `PackageReference` items and must not use `VersionOverride`.
+
+The `MSTest.Sdk` version is owned by `global.json`. MSTest injects its internal package set with `VersionOverride`, so the root policy permits only overrides tagged as coming from that SDK and rejects project-authored overrides.
+
+Committed `packages.lock.json` files remain beside executable, test, benchmark, and Roslyn component projects. Ordinary class libraries do not own locks because their supported resolved graphs are captured by the runnable and build-tool roots that consume them.
+
+Regenerate the canonical RID-less Release locks after an intentional dependency change:
+
+```powershell
+dotnet restore Vita.sln -p:Configuration=Release -p:Platform=AnyCPU -p:ContinuousIntegrationBuild=false --force-evaluate
+```
+
+Verify both CI restore contexts before building:
+
+```powershell
+dotnet restore Vita.sln -p:Configuration=Debug -p:Platform=AnyCPU -p:ContinuousIntegrationBuild=true
+dotnet restore Vita.sln -p:Configuration=Release -p:Platform=AnyCPU -p:ContinuousIntegrationBuild=true
+```
+
+RID-specific publishes use an uncommitted lock under `_obj` so they cannot rewrite the adjacent RID-less CI lock:
+
+```powershell
+dotnet publish Games\PhxStudio\PhxStudio\PhxStudio.csproj -p:Configuration=Release -p:Platform=AnyCPU -r win-x64 --self-contained true -p:PublishSingleFile=true
+```
+
+Review central catalog changes, regenerated lock diffs, component commits, and superproject gitlink updates as separate compatibility evidence; do not combine dependency upgrades with unrelated feature work.
